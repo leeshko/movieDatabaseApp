@@ -20,6 +20,11 @@ const Header = async () => {
       </Link>
 
       <ul className="hidden md:flex space-x-4 list-none">
+      <li className="mt-2">
+              <Link href="/" className="hover:text-gray-400">
+                Main page
+              </Link>
+            </li>
         {!user ? (
           <>
             <li>

@@ -6,12 +6,12 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${connection.connection.host}`);
   } catch (error: unknown) {
     if (error instanceof Error) {
-    console.error(error.message);
-    throw new Error(error.message);
-  } else {
-    console.error("An unknown error occurred");
-    throw new Error("An unknown error occurred");
-  }
+      console.error(error.message);
+      throw new Error(error.message);
+    } else {
+      console.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
   }
 };
 

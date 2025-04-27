@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { movieSchema } from "./Movie";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -16,6 +17,10 @@ const userSchema = new mongoose.Schema({
   },
   authProviderId: {
     type: String,
+  },
+  favouriteMovies: {
+    type: [movieSchema],
+    default: [],
   },
 });
 

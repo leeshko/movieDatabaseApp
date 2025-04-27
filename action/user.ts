@@ -10,10 +10,8 @@ const login = async (formData: FormData): Promise<void> => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  let result;
-
   try {
-    result = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
       redirect: false,
@@ -22,20 +20,15 @@ const login = async (formData: FormData): Promise<void> => {
   } catch (error) {
     console.log("Error in login action:", error);
   }
-
-  if (result?.error || !result) {
-    return { error: result?.error };
-  }
   redirect("/");
 };
 
 const register = async (formData: FormData) => {
-  const firstName = formData.get("firstname") as string;
-  const lastName = formData.get("lastname") as string;
+  const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!name || !email || !password) {
     throw new Error("Please fill all fields");
   }
 
@@ -46,7 +39,7 @@ const register = async (formData: FormData) => {
 
   const hashedPassword = await hash(password, 12);
 
-  await User.create({ firstName, lastName, email, password: hashedPassword });
+  await User.create({ name, email, password: hashedPassword });
   console.log(`User created!!!!`);
   redirect("/login");
 };

@@ -1,6 +1,10 @@
-import { fetchPopularMovies } from "@/action/movies";
+
+
+import { fetchLatestMovies } from "@/action/movies";
 import React from "react";
 import MoviesList from "./components/MoviesList";
+import Searchbar from "./components/Searchbar";
+import MoviesPagination from "./components/MoviesPagination";
 
 export type Movie = {
   id: number;
@@ -14,20 +18,27 @@ export type Movie = {
   name: string;
 };
 
-type MovieResponse = {
+export type MovieResponse = {
   page: number;
   results: Movie[];
   total_pages: number;
   total_results: number;
 };
 
-const MainPage = async () => {
-  const data: MovieResponse = await fetchPopularMovies();
+type Props = {
+  searchParams: { [key: string]: string | undefined };
+};
+
+const MainPage = async ({ searchParams }: Props) => {
+  const page = searchParams.page ? parseInt(searchParams.page) : 1;
+  const data: MovieResponse = await fetchLatestMovies(page);
 
   return (
     <main className="p-4">
       <h1 className="text-2xl font-bold mb-4 max-w-6xl mx-auto py-4">Latest Movies</h1>
+      <Searchbar />
       <MoviesList results={data.results} />
+      <MoviesPagination currentPage={page} totalPages={data.total_pages} />
     </main>
   );
 };

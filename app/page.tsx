@@ -1,5 +1,3 @@
-
-
 import { fetchLatestMovies } from "@/action/movies";
 import React from "react";
 import MoviesList from "./components/MoviesList";
@@ -30,15 +28,19 @@ type Props = {
 };
 
 const MainPage = async ({ searchParams }: Props) => {
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
-  const data: MovieResponse = await fetchLatestMovies(page);
+  const { page, query } = await searchParams;
+
+  const currentPage = page ? parseInt(page) : 1;
+  const data: MovieResponse = await fetchLatestMovies(currentPage, query);
 
   return (
     <main className="p-4">
-      <h1 className="text-2xl font-bold mb-4 max-w-6xl mx-auto py-4">Latest Movies</h1>
+      <h1 className="text-2xl font-bold mb-4 max-w-6xl mx-auto py-4">
+        Latest Movies
+      </h1>
       <Searchbar />
       <MoviesList results={data.results} />
-      <MoviesPagination currentPage={page} totalPages={data.total_pages} />
+      <MoviesPagination currentPage={currentPage} totalPages={data.total_pages} />
     </main>
   );
 };

@@ -1,18 +1,21 @@
 const API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
-export async function fetchLatestMovies(page: number = 1) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/movies?page=${page}`, {
-      next: { revalidate: 3600 }, 
-    });
-  
-    if (!res.ok) {
-      throw new Error("Failed to fetch movies");
-    }
-  
-    return res.json();
+export async function fetchLatestMovies(page: number = 1, query?: string) {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/movies?query=${
+    query ? query : ""
+  }&page=${page}`;
+
+  const res = await fetch(url, {
+    next: { revalidate: 3600 },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch movies");
   }
-  
+
+  return res.json();
+}
 
 export async function fetchMovieDetails(id: string) {
   const res = await fetch(

@@ -1,4 +1,3 @@
-// import AddToFav from "@/components/AddToFav";
 import { fetchMovieDetails } from "@/action/movies";
 import AddToFavourite from "@/app/components/AddToFavourite";
 import { Movie } from "@/app/page";
@@ -67,6 +66,7 @@ export default async function MoviePage({
             overview={movie.overview}
             releaseDate={movie.release_date || movie.first_air_date}
             voteCount={movie.vote_count}
+            cast={movie.credits.cast}
           />
 
           <div className="mt-4">

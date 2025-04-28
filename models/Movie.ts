@@ -24,6 +24,14 @@ export const movieSchema = new mongoose.Schema({
   poster_path: {
     type: String,
   },
+  cast: [
+    {
+      name: { type: String, required: false },
+      character: { type: String, required: false },
+      id: { type: Number },
+      profile_path: { type: String },
+    },
+  ],
 });
 
 export const Movie =

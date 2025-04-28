@@ -13,7 +13,6 @@ const MoviesPagination = ({ currentPage, totalPages }: Props) => {
   const searchParams = useSearchParams();
   const [inputPage, setInputPage] = useState(currentPage.toString());
 
-  // Синхронизация inputPage, если currentPage изменилось извне
   useEffect(() => {
     setInputPage(currentPage.toString());
   }, [currentPage]);

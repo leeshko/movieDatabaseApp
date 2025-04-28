@@ -1,14 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { Movie } from "../page";
 import MoviesList from "../components/MoviesList";
+import { redirect } from "next/navigation";
 
 export default function FavoriteMovies() {
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const { data: session, status } = useSession();
+  if (status !== "authenticated") {
+    redirect("/");
+  }
 
   useEffect(() => {
     const fetchFavorites = async () => {

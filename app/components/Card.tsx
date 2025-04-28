@@ -3,12 +3,14 @@ import { Movie } from "../page";
 import Image from "next/image";
 import { IconThumbUp } from "@tabler/icons-react";
 
-type CardProps = {
+interface CardProps {
   result: Movie;
-};
+}
 
 const Card = ({ result }: CardProps) => {
   const posterPath = result.backdrop_path || result.poster_path;
+  const description =
+    result.overview || result.description || "-overview is not availiable-";
   const id = result.movieId || result.id;
   return (
     <div className="group cursor-pointer hover:shadow-slate-400 shadow-md rounded-lg border border-slate-400 m-2 transition-shadow duration-200">
@@ -34,7 +36,7 @@ const Card = ({ result }: CardProps) => {
               !result.overview && "text-gray-500 italic"
             }`}
           >
-            {result.overview ? result.overview : "-overview is not availiable-"}
+            {description}
           </p>
 
           <h2 className="font-bold truncate my-2 text-sm">
@@ -43,7 +45,7 @@ const Card = ({ result }: CardProps) => {
           <p className="flex items-center text-xs">
             {result.release_date || result.first_air_date}
             <IconThumbUp className="h-5 mr-1 ml-3" />
-            {result.vote_count}
+            {result.vote_count || result.rating}
           </p>
         </div>
       </Link>

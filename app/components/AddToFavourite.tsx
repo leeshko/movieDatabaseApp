@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 declare module "next-auth" {
   interface User {
-    favouriteMovies?: string[]; // Если есть favoriteMovies
+    favouriteMovies?: string[]; 
   }
   interface Session {
     user?: User;
@@ -19,6 +19,7 @@ export default function AddToFavourite({
   overview,
   releaseDate,
   voteCount,
+  cast,
 }: {
   movieId: string;
   title: string;
@@ -26,11 +27,12 @@ export default function AddToFavourite({
   overview: string;
   releaseDate: string;
   voteCount: number;
+  cast: { name: string }[];
 }) {
   const [isFav, setIsFav] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
- 
+
   useEffect(() => {
     const checkFavorite = async () => {
       if (status === "authenticated" && session?.user) {
@@ -71,12 +73,13 @@ export default function AddToFavourite({
           releaseDate,
           voteCount,
           image,
+          cast,
           action: isFav ? "remove" : "add",
         }),
       });
 
       if (res.ok) {
-        setIsFav(!isFav); // Обновляем состояние после изменения
+        setIsFav(!isFav);
       } else {
         console.error("Failed to update favorites");
       }
@@ -88,7 +91,8 @@ export default function AddToFavourite({
   return (
     <div>
       <button
-        onClick={handleFavClick}
+        onClick={status !== "authenticated" ? handleFavClick : redirect("/register")}
+        
         className={`p-2 rounded cursor-pointer ${
           isFav ? "bg-red-300 dark:bg-red-600" : "bg-gray-300 dark:bg-gray-600"
         }`}

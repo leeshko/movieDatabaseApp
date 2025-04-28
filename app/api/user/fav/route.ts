@@ -37,9 +37,9 @@ export async function PUT(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { movieId, title, overview, releaseDate, voteCount, image, action } =
+  const { movieId, title, overview, releaseDate, voteCount, image, action, cast } =
     await req.json();
-  console.log(66666666, image);
+
   if (!movieId) {
     return new Response("Movie ID required", { status: 400 });
   }
@@ -71,6 +71,7 @@ export async function PUT(req: Request) {
         releaseDate,
         poster_path: image || "",
         rating: voteCount,
+        cast: cast || [],
       });
     }
   } else if (action === "remove") {

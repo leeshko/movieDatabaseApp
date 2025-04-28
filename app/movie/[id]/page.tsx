@@ -1,11 +1,10 @@
-// @ts-nocheck
 import { fetchMovieDetails } from "@/action/movies";
 import AddToFavourite from "@/app/components/AddToFavourite";
 import { Movie } from "@/app/page";
 import Image from "next/image";
 import Link from "next/link";
 
-const MoviePage = async ({ params }) => {
+const MoviePage = async ({ params }: { params: { id: string } }) => {
   const { id: movieId } = await params;
 
   const movie: Movie = await fetchMovieDetails(movieId);

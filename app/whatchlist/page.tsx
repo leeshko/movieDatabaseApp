@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import MoviesList from "../components/MoviesList";
 import { redirect } from "next/navigation";
 
-export default function FavoriteMovies() {
+const FavoriteMovies = () => {
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,3 +48,5 @@ export default function FavoriteMovies() {
     </div>
   );
 }
+
+export default FavoriteMovies;

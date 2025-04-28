@@ -45,7 +45,7 @@ const Card = ({ result }: CardProps) => {
           <p className="flex items-center text-xs">
             {result.release_date || result.first_air_date}
             <IconThumbUp className="h-5 mr-1 ml-3" />
-            {result.vote_count || result.rating}
+            {result.vote_count ?? result.rating}
           </p>
         </div>
       </Link>

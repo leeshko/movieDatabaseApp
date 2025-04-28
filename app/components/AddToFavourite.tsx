@@ -5,14 +5,14 @@ import { useSession } from "next-auth/react";
 
 declare module "next-auth" {
   interface User {
-    favouriteMovies?: string[]; 
+    favouriteMovies?: string[];
   }
   interface Session {
     user?: User;
   }
 }
 
-export default function AddToFavourite({
+const AddToFavourite = ({
   movieId,
   title,
   image,
@@ -28,7 +28,7 @@ export default function AddToFavourite({
   releaseDate: string;
   voteCount: number;
   cast: { name: string }[];
-}) {
+}) => {
   const [isFav, setIsFav] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -91,8 +91,9 @@ export default function AddToFavourite({
   return (
     <div>
       <button
-        onClick={status !== "authenticated" ? handleFavClick : redirect("/register")}
-        
+        onClick={
+          status !== "authenticated" ? handleFavClick : redirect("/register")
+        }
         className={`p-2 rounded cursor-pointer ${
           isFav ? "bg-red-300 dark:bg-red-600" : "bg-gray-300 dark:bg-gray-600"
         }`}
@@ -101,4 +102,6 @@ export default function AddToFavourite({
       </button>
     </div>
   );
-}
+};
+
+export default AddToFavourite;

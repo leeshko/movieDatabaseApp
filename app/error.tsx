@@ -1,15 +1,8 @@
 "use client";
-
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error;
-  reset: () => void;
-}) {
+const Error = ({ error, reset }: { error: Error; reset: () => void }) => {
   useEffect(() => {
     console.log(error);
   }, [error]);
@@ -27,4 +20,6 @@ export default function Error({
       </button>
     </div>
   );
-}
+};
+
+export default Error;

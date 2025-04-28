@@ -9,9 +9,10 @@ type CardProps = {
 
 const Card = ({ result }: CardProps) => {
   const posterPath = result.backdrop_path || result.poster_path;
+  const id = result.movieId || result.id;
   return (
     <div className="group cursor-pointer hover:shadow-slate-400 shadow-md rounded-lg border border-slate-400 m-2 transition-shadow duration-200">
-      <Link href={`/movie/${result.id}`}>
+      <Link href={`/movie/${id}`}>
         <div className="relative w-full aspect-[1/1]">
           <Image
             src={

@@ -6,6 +6,7 @@ import MoviesPagination from "./components/MoviesPagination";
 
 export type Movie = {
   id: number;
+  movieId?: string;
   title: string;
   release_date: string;
   first_air_date: string;
@@ -14,6 +15,11 @@ export type Movie = {
   backdrop_path: string;
   overview: string;
   name: string;
+  credits: {
+    cast: { name: string; character: string; profile_path: string }[];
+    crew: { name: string; job: string; profile_path: string }[];
+  };
+  genres: { id: number; name: string }[];
 };
 
 export type MovieResponse = {
@@ -40,7 +46,10 @@ const MainPage = async ({ searchParams }: Props) => {
       </h1>
       <Searchbar />
       <MoviesList results={data.results} />
-      <MoviesPagination currentPage={currentPage} totalPages={data.total_pages} />
+      <MoviesPagination
+        currentPage={currentPage}
+        totalPages={data.total_pages}
+      />
     </main>
   );
 };

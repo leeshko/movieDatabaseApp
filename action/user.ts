@@ -39,7 +39,7 @@ const register = async (formData: FormData) => {
 
   const hashedPassword = await hash(password, 12);
 
-  await User.create({ name, email, password: hashedPassword });
+  await User.create({ name, email, password: hashedPassword, favorites: [] });
   console.log(`User created!!!!`);
   redirect("/login");
 };

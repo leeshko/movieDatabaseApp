@@ -32,7 +32,10 @@ export type MovieResponse = {
 };
 
 type Props = {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{
+    page: string;
+    query: string;
+  }>;
 };
 
 const MainPage = async ({ searchParams }: Props) => {

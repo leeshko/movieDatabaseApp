@@ -4,7 +4,12 @@ import { Movie } from "@/app/page";
 import Image from "next/image";
 import Link from "next/link";
 
-const MoviePage = async ({ params }: { params: { id: string } }) => {
+type PageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+const MoviePage = async ({ params }: PageProps) => {
   const { id: movieId } = await params;
 
   const movie: Movie = await fetchMovieDetails(movieId);

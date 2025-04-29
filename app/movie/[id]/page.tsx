@@ -11,7 +11,7 @@ type PageProps = {
 };
 
 const MoviePage = async ({ params }: PageProps) => {
-  const movieId = await params.id;
+  const movieId = params.id;
 
   const movie: Movie = await fetchMovieDetails(movieId);
 

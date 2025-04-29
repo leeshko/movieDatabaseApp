@@ -7,8 +7,8 @@ A simple, modern Movies Database application built with Next.js, Redux, Tailwind
 ### Clone the repository:
 
 ```bash
-git clone your-repo-url 
-cd your-project-folder
+git clone https://github.com/leeshko/movieDatabaseApp.git 
+cd movie-db-app
 ```
 
 ### Install dependencies:
@@ -19,10 +19,9 @@ cd your-project-folder
 
 ```bash
 AUTH_SECRET=your_secret
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=mongodb_connection_string
 TMDB_API_KEY=your_tmdb_api_key
-TMDB_ACCESS_TOKEN=your_tmdb_access_token
-NEXT_PUBLIC_API_URL=https://your-vercel-app-url.vercel.app
+NEXT_PUBLIC_API_URL=http://localhost:3000
 NEXT_PUBLIC_MOVIE_DB_URL=https://api.themoviedb.org/3
 ```
 

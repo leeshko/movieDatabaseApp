@@ -5,7 +5,10 @@ import MoviesPagination from "@/app/components/MoviesPagination";
 import { MovieResponse } from "@/types/movie";
 
 type Props = {
-  searchParams: Promise<{ [key: string]: string | undefined }>;
+  searchParams: Promise<{
+    page: string;
+    query: string;
+  }>;
 };
 
 const MainPage = async ({ searchParams }: Props) => {

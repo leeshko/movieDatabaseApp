@@ -1,81 +1,102 @@
 import { fetchMovieDetails } from "@/action/movies";
 import AddToFavourite from "@/app/components/AddToFavourite";
-import { Movie } from "@/app/page";
 import Image from "next/image";
 import Link from "next/link";
+import { Movie } from "@/types/movie";
 
 type PageProps = {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 };
+
 const MoviePage = async ({ params }: PageProps) => {
-  const { id: movieId } = await params;
+  const movieId = await params.id;
 
   const movie: Movie = await fetchMovieDetails(movieId);
 
   if (!movie) {
     return (
       <div className="text-center mt-10">
-        <h1 className="text-xl my-5">
+        <h1 className="text-xl my-5 font-semibold text-gray-700">
           Movie details are not available at the moment!
         </h1>
-        <p>
-          <Link href="/" className="hover:text-amber-600">
-            Go Home
-          </Link>
-        </p>
+        <Link href="/" className="text-blue-500 hover:underline">
+          Go Home
+        </Link>
       </div>
     );
   }
 
-  const moviePoster = movie.backdrop_path || movie.poster_path;
+  const {
+    backdrop_path,
+    poster_path,
+    overview,
+    title,
+    name,
+    release_date,
+    first_air_date,
+    vote_count,
+    credits,
+  } = movie;
+
+  const moviePoster = backdrop_path || poster_path;
+  const movieTitle = title || name || "Untitled";
+  const movieOverview = overview || "Overview is not available";
+  const movieReleaseDate = release_date || first_air_date || "Unknown";
+  const movieRating = vote_count ?? "N/A";
+  const castList = credits?.cast || [];
 
   return (
     <div className="w-full">
       <div className="p-4 md:pt-8 flex flex-col md:flex-row content-center max-w-6xl mx-auto md:space-x-6">
-        <Image
-          src={
-            moviePoster
-              ? `https://image.tmdb.org/t/p/original/${moviePoster}`
-              : "/no-image.jpg"
-          }
-          alt="Movie Poster"
-          width={500}
-          height={500}
-          className="rounded-lg w-full md:w-96 h-56 object-cover"
-        ></Image>
-        <div className="p-2">
-          <h2 className="text-lg mb-3 font-bold">
-            {movie.title || movie.name}
-          </h2>
-          <p className={`text-lg mb-3 ${movie.overview ? "" : "italic"}`}>
-            {movie.overview ? movie.overview : "Overview is not availiable"}
+        <div className="relative w-full md:w-96 h-56 md:h-auto">
+          <Image
+            src={
+              moviePoster
+                ? `https://image.tmdb.org/t/p/original/${moviePoster}`
+                : "/no-image.jpg"
+            }
+            alt="Movie Poster"
+            fill
+            className="rounded-lg object-cover"
+            priority
+          />
+        </div>
+
+        <div className="p-2 flex-1">
+          <h2 className="text-2xl mb-4 font-bold">{movieTitle}</h2>
+          <p
+            className={`text-md mb-4 ${overview ? "" : "italic text-gray-500"}`}
+          >
+            {movieOverview}
           </p>
-          <p className="mb-3">
+
+          <p className="mb-2">
             <span className="font-semibold mr-1">Date Released:</span>
-            {movie.release_date || movie.first_air_date}
+            {movieReleaseDate}
           </p>
-          <p className="mb-3">
+          <p className="mb-4">
             <span className="font-semibold mr-1">Rating:</span>
-            {movie.vote_count}
+            {movieRating}
           </p>
+
           <AddToFavourite
             movieId={movieId}
-            title={movie.title || movie.name}
-            image={movie.backdrop_path || movie.poster_path}
-            overview={movie.overview}
-            releaseDate={movie.release_date || movie.first_air_date}
-            voteCount={movie.vote_count}
-            cast={movie.credits.cast}
+            title={movieTitle}
+            image={moviePoster || ""}
+            overview={overview || ""}
+            releaseDate={movieReleaseDate}
+            voteCount={vote_count}
+            cast={castList.map((actor) => ({ name: actor.name }))}
           />
 
-          <div className="mt-4">
-            <h3 className="text-lg font-bold mb-2">Cast:</h3>
-            <ul className="list-disc pl-5">
-              {movie.credits.cast.length ? (
-                movie.credits.cast.map((actor) => (
-                  <li key={actor.name} className="mb-1">
+          <div className="mt-8">
+            <h3 className="text-lg font-bold mb-3">Cast:</h3>
+            {castList.length ? (
+              <ul className="list-disc pl-5 space-y-2">
+                {castList.map((actor) => (
+                  <li key={actor.name} className="flex items-center gap-3">
                     <Image
                       src={
                         actor.profile_path
@@ -84,17 +105,21 @@ const MoviePage = async ({ params }: PageProps) => {
                       }
                       alt={actor.name}
                       width={50}
-                      height={150}
-                      className="mr-2 inline-block"
+                      height={75}
+                      className="rounded"
                     />
-                    <span className="font-semibold">{actor.name}</span> as{" "}
-                    {actor.name} as {actor.character}
+                    <span>
+                      <span className="font-semibold">{actor.name}</span> as{" "}
+                      {actor.character}
+                    </span>
                   </li>
-                ))
-              ) : (
-                <li className="mb-1 italic">No cast information available</li>
-              )}
-            </ul>
+                ))}
+              </ul>
+            ) : (
+              <p className="italic text-gray-500">
+                No cast information available
+              </p>
+            )}
           </div>
         </div>
       </div>

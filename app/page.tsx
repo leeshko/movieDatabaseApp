@@ -1,18 +1,17 @@
 import { fetchLatestMovies } from "@/action/movies";
-import MoviesList from "./components/MoviesList";
-import Searchbar from "./components/Searchbar";
-import MoviesPagination from "./components/MoviesPagination";
+import MoviesList from "@/app/components/MoviesList";
+import Searchbar from "@/app/components/Searchbar";
+import MoviesPagination from "@/app/components/MoviesPagination";
 import { MovieResponse } from "@/types/movie";
 
 type Props = {
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 const MainPage = async ({ searchParams }: Props) => {
-  const page = typeof searchParams.page === "string" ? parseInt(searchParams.page) : 1;
-  const query = typeof searchParams.query === "string" ? searchParams.query : "";
+  const params = await searchParams;
+  const page = typeof params.page === "string" ? parseInt(params.page) : 1;
+  const query = typeof params.query === "string" ? params.query : "";
 
   const data: MovieResponse = await fetchLatestMovies(page, query);
 

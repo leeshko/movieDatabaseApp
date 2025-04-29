@@ -1,6 +1,7 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 declare module "next-auth" {
@@ -12,6 +13,16 @@ declare module "next-auth" {
   }
 }
 
+interface AddToFavouriteProps {
+  movieId: string;
+  title: string;
+  image: string;
+  overview: string;
+  releaseDate: string;
+  voteCount: number;
+  cast: { name: string }[];
+}
+
 const AddToFavourite = ({
   movieId,
   title,
@@ -20,22 +31,14 @@ const AddToFavourite = ({
   releaseDate,
   voteCount,
   cast,
-}: {
-  movieId: string;
-  title: string;
-  image: string;
-  overview: string;
-  releaseDate: string;
-  voteCount: number;
-  cast: { name: string }[];
-}) => {
+}: AddToFavouriteProps) => {
   const [isFav, setIsFav] = useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    const checkFavorite = async () => {
-      if (status === "authenticated" && session?.user) {
+    const fetchFavorites = async () => {
+      if (status === "authenticated") {
         try {
           const res = await fetch("/api/user/fav");
           if (!res.ok) throw new Error("Failed to fetch favorites");
@@ -51,12 +54,12 @@ const AddToFavourite = ({
       }
     };
 
-    checkFavorite();
-  }, [movieId, status, session?.user]);
+    fetchFavorites();
+  }, [movieId, status]);
 
   const handleFavClick = async () => {
     if (status !== "authenticated") {
-      router.push("/api/auth/signin");
+      router.push("/register");
       return;
     }
 
@@ -79,26 +82,27 @@ const AddToFavourite = ({
       });
 
       if (res.ok) {
-        setIsFav(!isFav);
+        setIsFav((prev) => !prev);
       } else {
         console.error("Failed to update favorites");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error updating favorites:", error);
     }
   };
+
+  const buttonLabel = isFav ? "Remove from Favorites" : "Add to Favorites";
 
   return (
     <div>
       <button
-        onClick={
-          status !== "authenticated" ? handleFavClick : redirect("/register")
-        }
-        className={`p-2 rounded cursor-pointer ${
+        onClick={handleFavClick}
+        disabled={status === "loading"}
+        className={`p-2 rounded cursor-pointer transition ${
           isFav ? "bg-red-300 dark:bg-red-600" : "bg-gray-300 dark:bg-gray-600"
         }`}
       >
-        {isFav ? "Remove from Favorites" : "Add to Favorites"}
+        {buttonLabel}
       </button>
     </div>
   );

@@ -43,7 +43,6 @@ const MoviesPagination = ({ totalPages }: { totalPages: number }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
-      // только цифры
       setInputPage(value);
     }
   };
@@ -55,7 +54,7 @@ const MoviesPagination = ({ totalPages }: { totalPages: number }) => {
       dispatch(setPage(newPage));
       updateUrl(newPage);
     } else {
-      setInputPage(page.toString()); // откат на правильную страницу
+      setInputPage(page.toString());
     }
   };
 

@@ -2,53 +2,72 @@ import { register } from "@/action/user";
 import Link from "next/link";
 import React from "react";
 
-const Register = async () => {
+const Register = () => {
   return (
     <div className="mt-10 max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white border border-[#121212] dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-        My name
+      <h2 className="font-bold text-2xl text-neutral-800 dark:text-neutral-200 text-center">
+        Create an Account
       </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        {" "}
-        please provide info
+      <p className="text-neutral-600 text-sm max-w-sm mt-2 mb-6 dark:text-neutral-300 text-center">
+        Please fill in the information below to create your account.
       </p>
 
-      <form className="my-8 p-4 rounded-md shadow-md" action={register}>
-        <label htmlFor="name" className="block mb-2">
-          First Name
+      <form className="space-y-4" action={register}>
+        <div>
+          <label htmlFor="name" className="block mb-1 font-medium text-sm">
+            First Name
+          </label>
           <input
             id="name"
             name="name"
             type="text"
             placeholder="John"
-            className="border border-gray-300 rounded-md p-2 w-full "
+            required
+            className="border border-gray-300 rounded-md p-2 w-full"
           />
-        </label>
-        <label htmlFor="email" className="block mb-2">
-          Email
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block mb-1 font-medium text-sm">
+            Email
+          </label>
           <input
             id="email"
             name="email"
             type="email"
             placeholder="email@email.com"
+            required
             className="border border-gray-300 rounded-md p-2 w-full"
           />
-        </label>
-        <label htmlFor="password" className=" block mb-2">
-          Password
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block mb-1 font-medium text-sm">
+            Password
+          </label>
           <input
             id="password"
             name="password"
             type="password"
             placeholder="********"
-            className="border border-gray-300 rounded-md p-2 w-full mb-5"
+            required
+            minLength={6}
+            className="border border-gray-300 rounded-md p-2 w-full"
           />
-        </label>
-        <button className=" cursor-pointer bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]">
-          Sign up &rarr;
+        </div>
+
+        <button
+          type="submit"
+          className="mt-4 w-full h-10 rounded-md bg-gradient-to-br from-black to-gray-700 text-white font-medium hover:opacity-90 transition"
+        >
+          Sign Up →
         </button>
-        <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-          Already have an account? <Link href="/login">Login</Link>
+
+        <p className="text-neutral-600 text-sm text-center mt-4 dark:text-neutral-300">
+          Already have an account?{" "}
+          <Link href="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
         </p>
       </form>
     </div>

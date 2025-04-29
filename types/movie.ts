@@ -24,3 +24,10 @@ export type MovieResponse = {
   total_pages: number;
   total_results: number;
 };
+
+export type SearchParams = {
+    searchParams: Promise<{
+      page: string;
+      query: string;
+    }>;
+  };

@@ -1,58 +1,69 @@
 "use client";
 
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setPage } from "@/redux/slices/searchSlice";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 
-type Props = {
-  currentPage: number;
-  totalPages: number;
-};
-
-const MoviesPagination = ({ currentPage, totalPages }: Props) => {
+const MoviesPagination = ({ totalPages }: { totalPages: number }) => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [inputPage, setInputPage] = useState(currentPage.toString());
+  const page = useSelector((state: RootState) => state.search.page);
+
+  const [inputPage, setInputPage] = useState(page.toString());
 
   useEffect(() => {
-    setInputPage(currentPage.toString());
-  }, [currentPage]);
+    setInputPage(page.toString());
+  }, [page]);
 
-  const goToPage = useCallback((page: number) => {
+  const updateUrl = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
-    params.set("page", page.toString());
+    params.set("page", newPage.toString());
     router.push(`/?${params.toString()}`);
-  }, [router, searchParams]);
+  };
+
+  const handlePrev = () => {
+    if (page > 1) {
+      const newPage = page - 1;
+      dispatch(setPage(newPage));
+      updateUrl(newPage);
+    }
+  };
+
+  const handleNext = () => {
+    if (page < totalPages) {
+      const newPage = page + 1;
+      dispatch(setPage(newPage));
+      updateUrl(newPage);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
+      // только цифры
       setInputPage(value);
     }
   };
 
-  const handleInputSubmit = (e: React.FormEvent) => {
+  const handleInputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const pageNumber = parseInt(inputPage, 10);
-    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
-      goToPage(pageNumber);
+    const newPage = parseInt(inputPage, 10);
+    if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+      dispatch(setPage(newPage));
+      updateUrl(newPage);
     } else {
-      setInputPage(currentPage.toString());
+      setInputPage(page.toString()); // откат на правильную страницу
     }
   };
-
-  const handlePrev = useCallback(() => {
-    goToPage(Math.max(currentPage - 1, 1));
-  }, [currentPage, goToPage]);
-
-  const handleNext = useCallback(() => {
-    goToPage(Math.min(currentPage + 1, totalPages));
-  }, [currentPage, totalPages, goToPage]);
 
   return (
     <div className="flex items-center justify-center gap-4 mt-8">
       <button
         onClick={handlePrev}
-        disabled={currentPage <= 1}
+        disabled={page <= 1}
         className="cursor-pointer px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
       >
         Prev
@@ -71,7 +82,7 @@ const MoviesPagination = ({ currentPage, totalPages }: Props) => {
 
       <button
         onClick={handleNext}
-        disabled={currentPage >= totalPages}
+        disabled={page >= totalPages}
         className="cursor-pointer px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
       >
         Next

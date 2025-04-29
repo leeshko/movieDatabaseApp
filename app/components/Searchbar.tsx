@@ -1,44 +1,50 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setQuery } from "@/redux/slices/searchSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
-
-const useDebounce = (value: string, delay: number): string => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(handler);
-  }, [value, delay]);
-
-  return debouncedValue;
-};
+import { useEffect, useState } from "react";
 
 const Searchbar = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
+  const query = useSelector((state: RootState) => state.search.query);
 
-  const [search, setSearch] = useState(query);
-  const debouncedSearch = useDebounce(search, 500);
+  const [inputValue, setInputValue] = useState(query);
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    const delayDebounce = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
 
-    if (debouncedSearch.trim()) {
-      params.set("query", debouncedSearch.trim());
-      params.set("page", "1");
-    } else {
-      params.delete("query");
-      params.set("page", "1");
-    }
+      const currentQuery = searchParams.get("query") || "";
 
-    router.push(`/?${params.toString()}`);
-  }, [debouncedSearch, router, searchParams]);
+      if (inputValue.trim() !== currentQuery.trim()) {
+        if (inputValue.trim()) {
+          dispatch(setQuery(inputValue.trim()));
+          params.set("query", inputValue.trim());
+          params.set("page", "1");
+        } else {
+          dispatch(setQuery(""));
+          params.delete("query");
+          params.set("page", "1");
+        }
 
-  const handleClearSearch = () => {
-    setSearch("");
+        router.push(`/?${params.toString()}`);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [inputValue, router, searchParams, dispatch]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleClear = () => {
+    setInputValue("");
   };
 
   return (
@@ -49,14 +55,14 @@ const Searchbar = () => {
           type="text"
           placeholder="Search keywords..."
           className="w-full h-14 rounded-md placeholder-gray-700 outline-none bg-gray-100 flex-1 text-gray-900"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={inputValue}
+          onChange={handleChange}
         />
       </div>
-      {search && (
+      {inputValue && (
         <button
           type="reset"
-          onClick={handleClearSearch}
+          onClick={handleClear}
           className="cursor-pointer ml-3 text-gray-600 hover:text-gray-800 focus:outline-none"
         >
           &times;

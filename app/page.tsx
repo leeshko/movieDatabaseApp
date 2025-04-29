@@ -1,36 +1,20 @@
 import { fetchLatestMovies } from "@/action/movies";
-import React from "react";
 import MoviesList from "./components/MoviesList";
 import Searchbar from "./components/Searchbar";
 import MoviesPagination from "./components/MoviesPagination";
 import { MovieResponse } from "@/types/movie";
 
 type Props = {
-  searchParams: Promise<{
-    page: string;
-    query: string;
-  }>;
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
 };
 
 const MainPage = async ({ searchParams }: Props) => {
-  const { page, query } = await searchParams;
+  const page = typeof searchParams.page === "string" ? parseInt(searchParams.page) : 1;
+  const query = typeof searchParams.query === "string" ? searchParams.query : "";
 
-  const currentPage = page ? parseInt(page) : 1;
-
-  let data: MovieResponse;
-
-  try {
-    data = await fetchLatestMovies(currentPage, query);
-  } catch (error) {
-    console.error("Failed to fetch movies:", error);
-    return (
-      <main className="p-6 bg-gray-100 min-h-screen text-center">
-        <h1 className="text-3xl font-semibold text-gray-800 mb-6">
-          Failed to load movies. Please try again later.
-        </h1>
-      </main>
-    );
-  }
+  const data: MovieResponse = await fetchLatestMovies(page, query);
 
   return (
     <main className="p-6 bg-gray-100 min-h-screen">
@@ -39,10 +23,7 @@ const MainPage = async ({ searchParams }: Props) => {
       </h1>
       <Searchbar />
       <MoviesList results={data.results} />
-      <MoviesPagination
-        currentPage={currentPage}
-        totalPages={data.total_pages}
-      />
+      <MoviesPagination totalPages={data.total_pages} />
     </main>
   );
 };

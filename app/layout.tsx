@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import Providers from "./components/Providers";
 import Header from "./components/Header";
 
 const geistSans = Geist({
@@ -15,24 +15,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Movies DataBase App",
-  description: "A simple Movies DataBase App",
+  title: "Movies Database App",
+  description: "A simple Movies Database App",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SessionProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Providers>
           <Header />
           {children}
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );

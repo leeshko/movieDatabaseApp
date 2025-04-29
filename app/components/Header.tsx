@@ -52,7 +52,7 @@ const Header = async () => {
               }}
             >
               <button
-                className="cursor-pointer hover:text-gray-200 transition-colors duration-300 mt-2"
+                className="cursor-pointer hover:text-gray-200 transition-colors duration-300"
                 type="submit"
               >
                 Logout

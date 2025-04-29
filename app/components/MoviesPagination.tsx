@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 type Props = {
   currentPage: number;
@@ -17,35 +17,36 @@ const MoviesPagination = ({ currentPage, totalPages }: Props) => {
     setInputPage(currentPage.toString());
   }, [currentPage]);
 
-  const goToPage = (page: number) => {
+  const goToPage = useCallback((page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", page.toString());
     router.push(`/?${params.toString()}`);
-  };
+  }, [router, searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputPage(e.target.value);
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setInputPage(value);
+    }
   };
 
   const handleInputSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const pageNumber = parseInt(inputPage);
+    const pageNumber = parseInt(inputPage, 10);
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
       goToPage(pageNumber);
+    } else {
+      setInputPage(currentPage.toString());
     }
   };
 
-  const handlePrev = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
-  };
+  const handlePrev = useCallback(() => {
+    goToPage(Math.max(currentPage - 1, 1));
+  }, [currentPage, goToPage]);
 
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      goToPage(currentPage + 1);
-    }
-  };
+  const handleNext = useCallback(() => {
+    goToPage(Math.min(currentPage + 1, totalPages));
+  }, [currentPage, totalPages, goToPage]);
 
   return (
     <div className="flex items-center justify-center gap-4 mt-8">

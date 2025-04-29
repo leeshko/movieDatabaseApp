@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Movie } from "../page";
+import { Movie } from "@/types/movie";
 import Image from "next/image";
 import { IconThumbUp } from "@tabler/icons-react";
 
@@ -10,10 +10,15 @@ interface CardProps {
 const Card = ({ result }: CardProps) => {
   const posterPath = result.backdrop_path || result.poster_path;
   const description =
-    result.overview || result.description || "-overview is not availiable-";
-  const id = result.movieId || result.id;
+    result.overview || result.description || "Overview not available";
+  const title = result.title || result.name || "Untitled";
+  const releaseDate =
+    result.release_date || result.first_air_date || "Unknown date";
+  const rating = result.vote_count ?? result.rating ?? "N/A";
+  const id = result.id;
+
   return (
-    <div className="group cursor-pointer hover:shadow-slate-400 shadow-md rounded-lg border border-slate-400 m-2 transition-shadow duration-200">
+    <div className="group cursor-pointer hover:shadow-lg shadow-md rounded-lg border border-slate-400 m-2 transition-shadow duration-200 overflow-hidden">
       <Link href={`/movie/${id}`}>
         <div className="relative w-full aspect-[1/1]">
           <Image
@@ -22,15 +27,13 @@ const Card = ({ result }: CardProps) => {
                 ? `https://image.tmdb.org/t/p/original/${posterPath}`
                 : "/no-image.jpg"
             }
-            alt={result.title || result.name}
-            layout="fill"
-            objectFit="cover"
-            className="sm:rounded-t-lg group-hover:opacity-75 transition-opacity duration-300
-            w-full sm:h-36 object-cover
-          "
+            alt={title}
+            fill
+            className="object-cover group-hover:opacity-75 transition-opacity duration-300"
           />
         </div>
-        <div className="p-2 flex flex-col justify-end h-32">
+        <div className="p-3 flex flex-col justify-between h-36">
+          <h2 className="font-bold truncate text-sm mb-1">{title}</h2>
           <p
             className={`line-clamp-3 text-sm ${
               !result.overview && "text-gray-500 italic"
@@ -38,14 +41,10 @@ const Card = ({ result }: CardProps) => {
           >
             {description}
           </p>
-
-          <h2 className="font-bold truncate my-2 text-sm">
-            {result.title || result.name}
-          </h2>
-          <p className="flex items-center text-xs">
-            {result.release_date || result.first_air_date}
-            <IconThumbUp className="h-5 mr-1 ml-3" />
-            {result.vote_count ?? result.rating}
+          <p className="flex items-center text-xs mt-2">
+            {releaseDate}
+            <IconThumbUp className="h-4 ml-2 mr-1 text-blue-500" />
+            {rating}
           </p>
         </div>
       </Link>

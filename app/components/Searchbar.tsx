@@ -4,33 +4,42 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IconSearch } from "@tabler/icons-react";
 
-const Searchbar = () => {
-  const [search, setSearch] = useState("");
-  const router = useRouter();
-  const searchParams = useSearchParams();
+const useDebounce = (value: string, delay: number): string => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      const params = new URLSearchParams(searchParams);
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
 
-      if (search.trim()) {
-        params.set("query", search.trim());
-      } else {
-        params.delete("query");
-      }
+  return debouncedValue;
+};
 
-      const page = searchParams.get("page");
-      if (page) {
-        params.set("page", page);
-      } else {
-        params.set("page", "1");
-      }
+const Searchbar = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query") || "";
 
-      router.push(`/?${params.toString()}`);
-    }, 500);
+  const [search, setSearch] = useState(query);
+  const debouncedSearch = useDebounce(search, 500);
 
-    return () => clearTimeout(delayDebounce);
-  }, [search, router, searchParams]);
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+
+    if (debouncedSearch.trim()) {
+      params.set("query", debouncedSearch.trim());
+      params.set("page", "1");
+    } else {
+      params.delete("query");
+      params.set("page", "1");
+    }
+
+    router.push(`/?${params.toString()}`);
+  }, [debouncedSearch, router, searchParams]);
+
+  const handleClearSearch = () => {
+    setSearch("");
+  };
 
   return (
     <form className="flex justify-between px-5 max-w-6xl mx-auto bg-gray-100 rounded-md shadow-md">
@@ -47,7 +56,7 @@ const Searchbar = () => {
       {search && (
         <button
           type="reset"
-          onClick={() => setSearch("")}
+          onClick={handleClearSearch}
           className="cursor-pointer ml-3 text-gray-600 hover:text-gray-800 focus:outline-none"
         >
           &times;

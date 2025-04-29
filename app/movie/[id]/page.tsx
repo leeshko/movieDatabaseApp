@@ -5,13 +5,13 @@ import Link from "next/link";
 import { Movie } from "@/types/movie";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const MoviePage = async ({ params }: PageProps) => {
-  const movieId = params.id;
+  const { id: movieId } = await params;
 
   const movie: Movie = await fetchMovieDetails(movieId);
 

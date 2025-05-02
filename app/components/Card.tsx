@@ -15,7 +15,7 @@ const Card = ({ result }: CardProps) => {
   const releaseDate =
     result.release_date || result.first_air_date || "Unknown date";
   const rating = result.vote_count ?? result.rating ?? "N/A";
-  const id = result.id;
+  const id = result.id ?? result.movieId;
 
   return (
     <div className="group cursor-pointer hover:shadow-lg shadow-md rounded-lg border border-slate-400 m-2 transition-shadow duration-200 overflow-hidden">

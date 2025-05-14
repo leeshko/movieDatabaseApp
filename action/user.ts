@@ -4,24 +4,6 @@ import connectDB from "@/lib/db";
 import { User } from "@/models/User";
 import { redirect } from "next/navigation";
 import { hash } from "bcryptjs";
-import { signIn } from "@/auth";
-
-const login = async (formData: FormData): Promise<void> => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl: "/",
-    });
-  } catch (error) {
-    console.log("Error in login action:", error);
-  }
-  redirect("/");
-};
 
 const register = async (formData: FormData) => {
   const name = formData.get("name") as string;
@@ -44,10 +26,4 @@ const register = async (formData: FormData) => {
   redirect("/login");
 };
 
-const fetchAllUsers = async () => {
-  await connectDB();
-  const users = await User.find({});
-  return users;
-};
-
-export { register, login, fetchAllUsers };
+export { register };

@@ -38,7 +38,7 @@ const FavoriteMovies = () => {
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") {
           console.log("Fetch was aborted normally.");
-          return; // Просто выходим без ошибок
+          return;
         }
 
         if (err instanceof Error) {

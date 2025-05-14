@@ -1,10 +1,9 @@
-import NextAuth, { CredentialsSignin } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-
 import Google from "next-auth/providers/google";
+import { compare } from "bcryptjs";
 import connectDB from "./lib/db";
 import { User } from "./models/User";
-import { compare } from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -24,7 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const password = credentials.password as string | undefined;
 
         if (!email || !password) {
-          throw new CredentialsSignin("Please provide both email & password");
+          throw new Error("Please provide both email & password");
         }
 
         await connectDB();
@@ -32,11 +31,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await User.findOne({ email }).select("+password");
 
         if (!user) {
-          throw new CredentialsSignin("Invalid email or password");
+          throw new Error("Invalid email or password");
         }
 
         if (!user.password) {
-          throw new CredentialsSignin("Invalid email or password");
+          throw new Error("Invalid email or password");
         }
 
         const isMatched = await compare(password, user.password);
@@ -53,6 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return userData;
       },
+
     }),
   ],
   pages: {
@@ -64,30 +64,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.sub;
       }
       return session;
-    },
-
-    signIn: async ({ user, account }) => {
-      if (account?.provider === "google") {
-        try {
-          const { email, name, id } = user;
-          await connectDB();
-          const alreadyUser = await User.findOne({ email });
-
-          if (!alreadyUser) {
-            await User.create({ email, name, authProviderId: id });
-          } else {
-            return true;
-          }
-        } catch {
-          throw new Error("Error while creating user");
-        }
-      }
-
-      if (account?.provider === "credentials") {
-        return true;
-      } else {
-        return false;
-      }
     },
   },
 });

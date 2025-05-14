@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <div className="flex justify-between items-center mx-auto bg-gradient-to-r from-red-400 to-red-600 text-white p-4 shadow-lg rounded-b-lg">
-      <Link href="/">
+      <Link href="/" className="hidden md:block">
         <Image
           src="/logo.jpg"
           alt="logo"
@@ -21,7 +21,7 @@ const Header = () => {
         />
       </Link>
 
-      <ul className="hidden md:flex space-x-8 list-none">
+      <ul className="flex space-x-8 list-none">
         <li>
           <Link
             href="/"

@@ -3,7 +3,6 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
-// import { IconBrandGoogle } from "@tabler/icons-react";
 
 const Login = () => {
   const [error, setError] = useState("");
